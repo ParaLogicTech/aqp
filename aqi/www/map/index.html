@@ -1,0 +1,25 @@
+{% extends "templates/base.html" %}
+
+{% block content %}
+<div id="map-container">
+	<div id="map-view"></div>
+</div>
+
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" src="/assets/aqi/css/leaflet.css" />
+<style>
+	#map-container {
+		height: 1000px;
+		width: 100%;
+	}
+</style>
+{% endblock %}
+
+{% block script %}
+{{ include_script("map.bundle.js") }}
+<script>
+	aqi.make_map_view("#map-view");
+</script>
+{% endblock %}
