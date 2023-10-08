@@ -2,7 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
-from frappe import _
+from frappe import _, cint
 from frappe.utils import get_datetime
 from frappe.model.document import Document
 from datetime import timedelta
@@ -47,12 +47,12 @@ def clear_reading_cache():
 
 @frappe.whitelist(allow_guest=True)
 def get_latest_readings(for_datetime=None, window_minutes=60):
-	from aqi.air_quality.doctype.air_monitor.air_monitor import get_monitors
+	from aqi.air_quality.doctype.air_monitor.air_monitor import _get_monitors
 
 	if not for_datetime:
 		for_datetime = get_latest_reading_dt()
 
-	monitors = get_monitors(filters={"first_reading_dt": ["<=", for_datetime]}, limit_page_length=None)
+	monitors = _get_monitors(filters={"first_reading_dt": ["<=", for_datetime]})
 	for d in monitors:
 		d.has_reading = False
 
@@ -60,16 +60,24 @@ def get_latest_readings(for_datetime=None, window_minutes=60):
 		"readings": [],
 		"monitors": monitors,
 		"latest_reading_dt": None,
+		"from_dt": None,
+		"to_dt": None
 	})
 
 	if not for_datetime:
 		return out
 
-	for_datetime = get_datetime(for_datetime)
-	to_dt = for_datetime
-	from_dt = to_dt - timedelta(minutes=window_minutes)
+	window_minutes = cint(window_minutes)
+	if window_minutes <= 0:
+		frappe.throw(_("window_minutes must be a positive integer"))
+	if window_minutes > 1440:
+		frappe.throw(_("window_minutes cannot be greater than 1440 minutes"))
 
-	readings = get_monitor_readings(from_dt, to_dt)
+	for_datetime = get_datetime(for_datetime)
+	out.to_dt = for_datetime
+	out.from_dt = out.to_dt - timedelta(minutes=window_minutes)
+
+	readings = get_monitor_readings(out.from_dt, out.to_dt)
 	if readings:
 		out.latest_reading_dt = readings[0].reading_dt
 
@@ -102,7 +110,7 @@ def get_monitor_readings(from_dt, to_dt):
 			r.temperature, r.relative_humidity, r.co2
 		from `tabMonitor Reading` r
 		inner join `tabAir Monitor` m on m.name = r.air_monitor
-		where reading_dt between %(from_dt)s and %(to_dt)s
+		where reading_dt between %(from_dt)s and %(to_dt)s and m.disabled = 0
 		order by reading_dt desc
 	""", args, as_dict=1)
 

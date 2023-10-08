@@ -21,6 +21,8 @@
   "serial_no",
   "status_section",
   "online_since",
+  "disabled",
+  "inactive",
   "column_break_jjwuc",
   "first_reading_dt",
   "last_reading_dt"
@@ -120,11 +122,24 @@
    "label": "First Reading Time",
    "no_copy": 1,
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "in_standard_filter": 1,
+   "label": "Disabled"
+  },
+  {
+   "default": "0",
+   "fieldname": "inactive",
+   "fieldtype": "Check",
+   "label": "Inactive"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-08 06:28:23.696040",
+ "modified": "2023-10-08 15:12:11.076153",
  "modified_by": "Administrator",
  "module": "Air Quality",
  "name": "Air Monitor",

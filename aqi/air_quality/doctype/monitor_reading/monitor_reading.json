@@ -103,6 +103,7 @@
   {
    "fieldname": "aqi_us",
    "fieldtype": "Int",
+   "in_list_view": 1,
    "label": "US AQI",
    "non_negative": 1
   },
@@ -119,7 +120,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-08 04:55:16.890447",
+ "modified": "2023-10-08 14:42:57.336656",
  "modified_by": "Administrator",
  "module": "Air Quality",
  "name": "Monitor Reading",

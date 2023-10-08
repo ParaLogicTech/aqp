@@ -2,7 +2,8 @@
 # For license information, please see license.txt
 
 import frappe
-from frappe.utils import clean_whitespace
+from frappe.utils import clean_whitespace, cint
+from aqi.air_quality.utils import get_order_by
 from frappe.model.document import Document
 
 
@@ -42,13 +43,35 @@ class AirMonitor(Document):
 
 
 @frappe.whitelist()
-def get_monitors(filters=None, limit_start=0, limit_page_length=20, order_by=None):
+def get_monitors(filters=None, limit_start=0, limit_page_length=20, sort_by="creation", sort_order="asc"):
+	monitors = _get_monitors(filters, limit_start, limit_page_length, sort_by, sort_order)
+
+	return frappe._dict({
+		"data": monitors,
+		"pagination": frappe._dict({
+			"count": len(monitors),
+			"total_count": frappe.db.count("Air Monitor", filters),
+			"limit_start": cint(limit_start),
+			"limit_page_length": cint(limit_page_length),
+		}),
+	})
+
+
+def _get_monitors(filters=None, limit_start=None, limit_page_length=None, sort_by=None, sort_order=None):
 	fields = [
-		"name", "monitor_name",
+		"name", "monitor_name", "inactive",
 		"country", "city", "latitude", "longitude",
 		"online_since", "first_reading_dt", "last_reading_dt",
 		"creation", "modified"
 	]
+
+	if not filters:
+		filters = {}
+
+	if isinstance(filters, dict):
+		filters["disabled"] = 0
+	elif isinstance(filters, list):
+		filters.append(["Air Monitor", "disabled", "=", 0])
 
 	return frappe.get_all(
 		"Air Monitor",
@@ -56,5 +79,5 @@ def get_monitors(filters=None, limit_start=0, limit_page_length=20, order_by=Non
 		filters=filters,
 		limit_start=limit_start,
 		limit_page_length=limit_page_length,
-		order_by=order_by
+		order_by=get_order_by("Air Monitor", sort_by, sort_order, fields)
 	)
