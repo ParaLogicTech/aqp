@@ -1,5 +1,5 @@
 <template>
-	<l-map style="height: 300px" :zoom="zoom" :center="center">
+	<l-map :zoom="zoom" :center="center">
 		<l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
 <!--
 		<l-marker :lat-lng="markerLatLng"></l-marker>
@@ -23,7 +23,7 @@ export default {
 	data () {
 		return {
 			url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-			zoom: 1,
+			zoom: 5.5,
 			center: new L.LatLng(30.0, 70.0),
 			attribution: "Testing"
 		}
