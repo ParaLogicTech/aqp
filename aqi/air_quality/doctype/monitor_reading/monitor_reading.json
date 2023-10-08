@@ -1,0 +1,170 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "autoname": "autoincrement",
+ "creation": "2023-10-08 03:45:56.240303",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "air_monitor",
+  "column_break_bspja",
+  "reading_dt",
+  "reading_section",
+  "pm_2_5",
+  "outdoor_pm_2_5",
+  "column_break_l8rud",
+  "temperature",
+  "relative_humidity",
+  "column_break_b1ugw",
+  "co2",
+  "air_quality_section",
+  "aqi_us",
+  "column_break_u9iwp",
+  "outdoor_aqi_us"
+ ],
+ "fields": [
+  {
+   "fieldname": "air_monitor",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Air Monitor",
+   "options": "Air Monitor",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_bspja",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reading_dt",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Reading Time",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "reading_section",
+   "fieldtype": "Section Break",
+   "label": "Reading"
+  },
+  {
+   "fieldname": "pm_2_5",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "PM2.5 (\u03bcg/m3)",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "outdoor_pm_2_5",
+   "fieldtype": "Float",
+   "label": "Outdoor PM2.5 (\u03bcg/m3)",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "column_break_l8rud",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "temperature",
+   "fieldtype": "Float",
+   "label": "Temperature (\u00b0C)",
+   "precision": "1"
+  },
+  {
+   "fieldname": "relative_humidity",
+   "fieldtype": "Float",
+   "label": "Relative Humidity (%)",
+   "precision": "1"
+  },
+  {
+   "fieldname": "column_break_b1ugw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "co2",
+   "fieldtype": "Float",
+   "label": "CO2 (ppm)",
+   "non_negative": 1,
+   "precision": "1"
+  },
+  {
+   "fieldname": "air_quality_section",
+   "fieldtype": "Section Break",
+   "label": "Air Quality"
+  },
+  {
+   "fieldname": "aqi_us",
+   "fieldtype": "Int",
+   "label": "US AQI",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "column_break_u9iwp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "outdoor_aqi_us",
+   "fieldtype": "Int",
+   "label": "Outdoor US AQI",
+   "non_negative": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-10-08 04:55:16.890447",
+ "modified_by": "Administrator",
+ "module": "Air Quality",
+ "name": "Monitor Reading",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "import": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Air Quality Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Air Quality User",
+   "share": 1
+  }
+ ],
+ "search_fields": "air_monitor",
+ "sort_field": "reading_dt",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "air_monitor",
+ "track_seen": 1
+}

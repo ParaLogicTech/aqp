@@ -7,6 +7,12 @@ app_description = "Air Quality Platform"
 app_email = "info@paralogic.io"
 app_license = "MIT"
 
+
+override_whitelisted_methods = {
+	"monitors.get_monitors": "aqi.air_quality.doctype.air_monitor.air_monitor.get_monitors",
+	"readings.get_latest_readings": "aqi.air_quality.doctype.monitor_reading.monitor_reading.get_latest_readings",
+}
+
 # Includes in <head>
 # ------------------
 
