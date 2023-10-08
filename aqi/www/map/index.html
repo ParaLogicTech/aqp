@@ -11,7 +11,7 @@
 <link type="text/css" rel="stylesheet" href="/assets/aqi/css/leaflet.css" />
 <style>
 	#map-container {
-		height: 70vh;
+		height: 100vh;
 		width: 100%;
 	}
 </style>
@@ -22,4 +22,10 @@
 <script>
 	aqi.make_map_view("#map-view");
 </script>
+{% endblock %}
+
+{# Remove header and footer #}
+{% block navbar %}
+{% endblock %}
+{% block footer %}
 {% endblock %}
