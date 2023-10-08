@@ -53,12 +53,14 @@ def get_latest_readings(for_datetime=None, window_minutes=60):
 		for_datetime = get_latest_reading_dt()
 
 	monitors = _get_monitors(filters={"first_reading_dt": ["<=", for_datetime]})
+	monitors_map = {}
 	for d in monitors:
 		d.has_reading = False
+		monitors_map[d.name] = d
 
 	out = frappe._dict({
 		"readings": [],
-		"monitors": monitors,
+		"monitors": monitors_map,
 		"latest_reading_dt": None,
 		"from_dt": None,
 		"to_dt": None
@@ -87,9 +89,9 @@ def get_latest_readings(for_datetime=None, window_minutes=60):
 			air_monitors_visited.add(d.air_monitor)
 			out.readings.append(d)
 
-	for d in out.monitors:
-		if d.name in air_monitors_visited:
-			d.has_reading = True
+	for monitor in air_monitors_visited:
+		if monitors_map.get(monitor):
+			monitors_map[monitor].has_reading = True
 
 	return out
 
