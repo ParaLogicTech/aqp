@@ -15,6 +15,12 @@ class AirMonitor(Document):
 		self.clean_fields()
 		self.set_first_last_reading()
 
+	def on_update(self):
+		clear_monitors_cache()
+
+	def on_trash(self):
+		clear_monitors_cache()
+
 	def clean_fields(self):
 		fields = ["city", "serial_no"]
 		for f in fields:
@@ -81,3 +87,7 @@ def _get_monitors(filters=None, limit_start=None, limit_page_length=None, sort_b
 		limit_page_length=limit_page_length,
 		order_by=get_order_by("Air Monitor", sort_by, sort_order, fields)
 	)
+
+
+def clear_monitors_cache():
+	pass

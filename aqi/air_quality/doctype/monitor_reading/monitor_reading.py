@@ -3,7 +3,7 @@
 
 import frappe
 from frappe import _, cint
-from frappe.utils import get_datetime
+from frappe.utils import get_datetime, round_down
 from frappe.model.document import Document
 from datetime import timedelta
 
@@ -13,11 +13,11 @@ class MonitorReading(Document):
 		self.validate_duplicate()
 
 	def on_update(self):
-		clear_reading_cache()
+		clear_readings_cache()
 		self.update_air_monitor()
 
 	def on_trash(self):
-		clear_reading_cache()
+		clear_readings_cache()
 		self.update_air_monitor()
 
 	def validate_duplicate(self):
@@ -34,15 +34,38 @@ class MonitorReading(Document):
 				frappe.utils.get_link_to_form("Monitor Reading", existing)
 			))
 
+	def calculate_aqi(self):
+		pass
+
+	def determine_aqi_category(self):
+		pass
+
 	def update_air_monitor(self):
 		air_monitor = frappe.get_doc("Air Monitor", self.air_monitor)
 		air_monitor.set_first_last_reading(update=True)
 
 
-def clear_reading_cache():
+def clear_readings_cache():
 	cache_keys = ["latest_monitor_reading_dt"]
 	for key in cache_keys:
 		frappe.cache().delete_key(key)
+
+
+def calculate_aqi(pollutant_value, pollutant_type):
+	pollutant_precision = {
+		"PM2.5": 1,
+		"PM10": 0,
+		"Ozone": 3,
+		"CO": 1,
+		"SO2": 0,
+		"NO2": 0,
+	}
+
+	if pollutant_type not in pollutant_precision:
+		frappe.throw(_("Invalid Pollutant Type"))
+
+	precision = pollutant_precision[pollutant_type]
+	pollutant_value = round_down(pollutant_value, precision)
 
 
 @frappe.whitelist(allow_guest=True)
