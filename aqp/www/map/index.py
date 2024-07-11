@@ -1,5 +1,5 @@
 import frappe
-from aqi.air_quality.doctype.monitor_reading.monitor_reading import get_latest_readings
+from aqp.air_quality.doctype.monitor_reading.monitor_reading import get_latest_readings
 
 sitemap = 1
 

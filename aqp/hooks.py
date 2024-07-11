@@ -1,6 +1,6 @@
 from . import __version__ as app_version
 
-app_name = "aqi"
+app_name = "aqp"
 app_title = "Air Quality"
 app_publisher = "ParaLogic"
 app_description = "Air Quality Platform"
@@ -9,23 +9,23 @@ app_license = "MIT"
 
 
 override_whitelisted_methods = {
-	"monitors.get_monitors": "aqi.air_quality.doctype.air_monitor.air_monitor.get_monitors",
-	"readings.get_latest_readings": "aqi.air_quality.doctype.monitor_reading.monitor_reading.get_latest_readings",
+	"monitors.get_monitors": "aqp.air_quality.doctype.air_monitor.air_monitor.get_monitors",
+	"readings.get_latest_readings": "aqp.air_quality.doctype.monitor_reading.monitor_reading.get_latest_readings",
 }
 
 # Includes in <head>
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/aqi/css/aqi.css"
-# app_include_js = "/assets/aqi/js/aqi.js"
+# app_include_css = "/assets/aqp/css/aqp.css"
+# app_include_js = "/assets/aqp/js/aqp.js"
 
 # include js, css files in header of web template
-# web_include_css = "/assets/aqi/css/aqi.css"
-# web_include_js = "/assets/aqi/js/aqi.js"
+# web_include_css = "/assets/aqp/css/aqp.css"
+# web_include_js = "/assets/aqp/js/aqp.js"
 
 # include custom scss in every website theme (without file extension ".scss")
-# website_theme_scss = "aqi/public/scss/website"
+# website_theme_scss = "aqp/public/scss/website"
 
 # include js, css files in header of web form
 # webform_include_js = {"doctype": "public/js/doctype.js"}
@@ -62,43 +62,43 @@ override_whitelisted_methods = {
 
 # add methods and filters to jinja environment
 # jinja = {
-#	"methods": "aqi.utils.jinja_methods",
-#	"filters": "aqi.utils.jinja_filters"
+#	"methods": "aqp.utils.jinja_methods",
+#	"filters": "aqp.utils.jinja_filters"
 # }
 
 # Installation
 # ------------
 
-# before_install = "aqi.install.before_install"
-# after_install = "aqi.install.after_install"
+# before_install = "aqp.install.before_install"
+# after_install = "aqp.install.after_install"
 
 # Uninstallation
 # ------------
 
-# before_uninstall = "aqi.uninstall.before_uninstall"
-# after_uninstall = "aqi.uninstall.after_uninstall"
+# before_uninstall = "aqp.uninstall.before_uninstall"
+# after_uninstall = "aqp.uninstall.after_uninstall"
 
 # Integration Setup
 # ------------------
 # To set up dependencies/integrations with other apps
 # Name of the app being installed is passed as an argument
 
-# before_app_install = "aqi.utils.before_app_install"
-# after_app_install = "aqi.utils.after_app_install"
+# before_app_install = "aqp.utils.before_app_install"
+# after_app_install = "aqp.utils.after_app_install"
 
 # Integration Cleanup
 # -------------------
 # To clean up dependencies/integrations with other apps
 # Name of the app being uninstalled is passed as an argument
 
-# before_app_uninstall = "aqi.utils.before_app_uninstall"
-# after_app_uninstall = "aqi.utils.after_app_uninstall"
+# before_app_uninstall = "aqp.utils.before_app_uninstall"
+# after_app_uninstall = "aqp.utils.after_app_uninstall"
 
 # Desk Notifications
 # ------------------
 # See frappe.core.notifications.get_notification_config
 
-# notification_config = "aqi.notifications.get_notification_config"
+# notification_config = "aqp.notifications.get_notification_config"
 
 # Permissions
 # -----------
@@ -137,39 +137,39 @@ override_whitelisted_methods = {
 
 # scheduler_events = {
 #	"all": [
-#		"aqi.tasks.all"
+#		"aqp.tasks.all"
 #	],
 #	"daily": [
-#		"aqi.tasks.daily"
+#		"aqp.tasks.daily"
 #	],
 #	"hourly": [
-#		"aqi.tasks.hourly"
+#		"aqp.tasks.hourly"
 #	],
 #	"weekly": [
-#		"aqi.tasks.weekly"
+#		"aqp.tasks.weekly"
 #	],
 #	"monthly": [
-#		"aqi.tasks.monthly"
+#		"aqp.tasks.monthly"
 #	],
 # }
 
 # Testing
 # -------
 
-# before_tests = "aqi.install.before_tests"
+# before_tests = "aqp.install.before_tests"
 
 # Overriding Methods
 # ------------------------------
 #
 # override_whitelisted_methods = {
-#	"frappe.desk.doctype.event.event.get_events": "aqi.event.get_events"
+#	"frappe.desk.doctype.event.event.get_events": "aqp.event.get_events"
 # }
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
 # along with any modifications made in other Frappe apps
 # override_doctype_dashboards = {
-#	"Task": "aqi.task.get_dashboard_data"
+#	"Task": "aqp.task.get_dashboard_data"
 # }
 
 # exempt linked doctypes from being automatically cancelled
@@ -183,13 +183,13 @@ override_whitelisted_methods = {
 
 # Request Events
 # ----------------
-# before_request = ["aqi.utils.before_request"]
-# after_request = ["aqi.utils.after_request"]
+# before_request = ["aqp.utils.before_request"]
+# after_request = ["aqp.utils.after_request"]
 
 # Job Events
 # ----------
-# before_job = ["aqi.utils.before_job"]
-# after_job = ["aqi.utils.after_job"]
+# before_job = ["aqp.utils.before_job"]
+# after_job = ["aqp.utils.after_job"]
 
 # User Data Protection
 # --------------------
@@ -219,5 +219,5 @@ override_whitelisted_methods = {
 # --------------------------------
 
 # auth_hooks = [
-#	"aqi.auth.validate"
+#	"aqp.auth.validate"
 # ]

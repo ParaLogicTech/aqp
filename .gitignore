@@ -3,7 +3,7 @@
 *.egg-info
 *.swp
 tags
-aqi/docs/current
+aqp/docs/current
 node_modules/
 __pycache__
 .idea/

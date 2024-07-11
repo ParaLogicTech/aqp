@@ -4,15 +4,15 @@ include *.json
 include *.md
 include *.py
 include *.txt
-recursive-include aqi *.css
-recursive-include aqi *.csv
-recursive-include aqi *.html
-recursive-include aqi *.ico
-recursive-include aqi *.js
-recursive-include aqi *.json
-recursive-include aqi *.md
-recursive-include aqi *.png
-recursive-include aqi *.py
-recursive-include aqi *.svg
-recursive-include aqi *.txt
-recursive-exclude aqi *.pyc
+recursive-include aqp *.css
+recursive-include aqp *.csv
+recursive-include aqp *.html
+recursive-include aqp *.ico
+recursive-include aqp *.js
+recursive-include aqp *.json
+recursive-include aqp *.md
+recursive-include aqp *.png
+recursive-include aqp *.py
+recursive-include aqp *.svg
+recursive-include aqp *.txt
+recursive-exclude aqp *.pyc

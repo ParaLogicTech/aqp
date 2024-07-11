@@ -3,7 +3,7 @@
 
 import frappe
 from frappe.utils import clean_whitespace, cint
-from aqi.air_quality.utils import get_order_by
+from aqp.air_quality.utils import get_order_by
 from frappe.model.document import Document
 
 

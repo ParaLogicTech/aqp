@@ -70,7 +70,7 @@ def calculate_aqi(pollutant_value, pollutant_type):
 
 @frappe.whitelist(allow_guest=True)
 def get_latest_readings(for_datetime=None, window_minutes=60):
-	from aqi.air_quality.doctype.air_monitor.air_monitor import _get_monitors
+	from aqp.air_quality.doctype.air_monitor.air_monitor import _get_monitors
 
 	if not for_datetime:
 		for_datetime = get_latest_reading_dt()

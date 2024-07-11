@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block style %}
-<link type="text/css" rel="stylesheet" href="/assets/aqi/css/leaflet.css" />
+<link type="text/css" rel="stylesheet" href="/assets/aqp/css/leaflet.css" />
 <style>
 	#map-container {
 		height: 100vh;
@@ -20,7 +20,7 @@
 {% block script %}
 {{ include_script("map.bundle.js") }}
 <script>
-	aqi.make_map_view("#map-view");
+	aqp.make_map_view("#map-view");
 </script>
 {% endblock %}
 

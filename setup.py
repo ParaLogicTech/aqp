@@ -3,11 +3,11 @@ from setuptools import setup, find_packages
 with open("requirements.txt") as f:
 	install_requires = f.read().strip().split("\n")
 
-# get version from __version__ variable in aqi/__init__.py
-from aqi import __version__ as version
+# get version from __version__ variable in aqp/__init__.py
+from aqp import __version__ as version
 
 setup(
-	name="aqi",
+	name="aqp",
 	version=version,
 	description="Air Quality Platform",
 	author="ParaLogic",
