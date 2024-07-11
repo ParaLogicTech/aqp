@@ -13,22 +13,16 @@
   "reading_dt",
   "reading_section",
   "pm_2_5",
-  "outdoor_pm_2_5",
   "column_break_l8rud",
   "temperature",
+  "column_break_mhwxu",
   "relative_humidity",
   "column_break_b1ugw",
   "co2",
   "air_quality_section",
   "aqi_us",
-  "aqi_category",
   "column_break_u9iwp",
-  "outdoor_aqi_us",
-  "outdoor_aqi_category",
-  "pm25_air_quality_section",
-  "aqi_pm_2_5_us",
-  "column_break_bklzy",
-  "pm_2_5_aqi_category"
+  "aqi_category"
  ],
  "fields": [
   {
@@ -64,13 +58,6 @@
    "fieldtype": "Float",
    "in_list_view": 1,
    "label": "PM2.5 (\u03bcg/m3)",
-   "non_negative": 1,
-   "precision": "2"
-  },
-  {
-   "fieldname": "outdoor_pm_2_5",
-   "fieldtype": "Float",
-   "label": "Outdoor PM2.5 (\u03bcg/m3)",
    "non_negative": 1,
    "precision": "2"
   },
@@ -118,12 +105,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "outdoor_aqi_us",
-   "fieldtype": "Int",
-   "label": "Outdoor AQI (US)",
-   "non_negative": 1
-  },
-  {
    "default": "Not Available",
    "fieldname": "aqi_category",
    "fieldtype": "Select",
@@ -134,39 +115,13 @@
    "read_only": 1
   },
   {
-   "default": "Not Available",
-   "fieldname": "outdoor_aqi_category",
-   "fieldtype": "Select",
-   "label": "Outdoor AQI Category",
-   "options": "Not Available\nGood\nModerate\nUnhealthy for Sensitive Groups\nUnhealthy\nVery Unhealthy\nHazardous",
-   "read_only": 1
-  },
-  {
-   "fieldname": "pm25_air_quality_section",
-   "fieldtype": "Section Break",
-   "label": "PM2.5 Air Quality"
-  },
-  {
-   "fieldname": "aqi_pm_2_5_us",
-   "fieldtype": "Int",
-   "label": "PM2.5 AQI (US)"
-  },
-  {
-   "fieldname": "column_break_bklzy",
+   "fieldname": "column_break_mhwxu",
    "fieldtype": "Column Break"
-  },
-  {
-   "default": "Not Available",
-   "fieldname": "pm_2_5_aqi_category",
-   "fieldtype": "Select",
-   "label": "PM2.5 AQI Category",
-   "options": "Not Available\nGood\nModerate\nUnhealthy for Sensitive Groups\nUnhealthy\nVery Unhealthy\nHazardous",
-   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-09 01:59:39.764207",
+ "modified": "2024-07-12 01:06:13.385336",
  "modified_by": "Administrator",
  "module": "Air Quality",
  "name": "Monitor Reading",

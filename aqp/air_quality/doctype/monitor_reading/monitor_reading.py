@@ -6,11 +6,42 @@ from frappe import _, cint
 from frappe.utils import get_datetime, round_down
 from frappe.model.document import Document
 from datetime import timedelta
+import aqi
+
+
+POLLUTANT_TO_AQI_POLLUTANT = {
+	"PM2.5": aqi.POLLUTANT_PM25,
+	"PM10": aqi.POLLUTANT_PM10,
+	"O3": aqi.POLLUTANT_O3_8H,
+	"SO2": aqi.POLLUTANT_SO2_1H,
+	"NO2": aqi.POLLUTANT_NO2_1H,
+	"CO": aqi.POLLUTANT_CO_8H,
+}
+
+POLLUTANT_PRECISION = {
+	"PM2.5": 1,
+	"PM10": 0,
+	"O3": 3,
+	"SO2": 0,
+	"NO2": 0,
+	"CO": 1,
+}
+
+POLLUTANT_MAX_RANGE = {
+	"PM2.5": [500.5, 500],
+	"PM10": [605, 500],
+	"O3": [0.375, 300],
+	"SO2": [1005, 500],
+	"NO2": [2050, 500],
+	"CO": [50.5, 500],
+}
 
 
 class MonitorReading(Document):
 	def validate(self):
 		self.validate_duplicate()
+		self.calculate_aqi()
+		self.determine_aqi_category()
 
 	def on_update(self):
 		clear_readings_cache()
@@ -35,10 +66,13 @@ class MonitorReading(Document):
 			))
 
 	def calculate_aqi(self):
-		pass
+		self.aqi_us = calculate_aqi("PM2.5", self.pm_2_5)
 
 	def determine_aqi_category(self):
-		pass
+		if not self.pm_2_5:
+			self.aqi_category = "Not Available"
+		else:
+			self.aqi_category = get_aqi_category(self.aqi_us)
 
 	def update_air_monitor(self):
 		air_monitor = frappe.get_doc("Air Monitor", self.air_monitor)
@@ -51,21 +85,38 @@ def clear_readings_cache():
 		frappe.cache().delete_key(key)
 
 
-def calculate_aqi(pollutant_value, pollutant_type):
-	pollutant_precision = {
-		"PM2.5": 1,
-		"PM10": 0,
-		"Ozone": 3,
-		"CO": 1,
-		"SO2": 0,
-		"NO2": 0,
-	}
+def calculate_aqi(pollutant_type, pollutant_value):
+	if pollutant_type not in POLLUTANT_TO_AQI_POLLUTANT:
+		frappe.throw(_("Pollutant Type {0} is not supported").format(pollutant_type))
 
-	if pollutant_type not in pollutant_precision:
-		frappe.throw(_("Invalid Pollutant Type"))
-
-	precision = pollutant_precision[pollutant_type]
+	precision = POLLUTANT_PRECISION[pollutant_type]
 	pollutant_value = round_down(pollutant_value, precision)
+
+	max_limit, limit_aqi = POLLUTANT_MAX_RANGE[pollutant_type]
+	if pollutant_value >= max_limit:
+		return limit_aqi
+
+	return cint(aqi.to_iaqi(
+		POLLUTANT_TO_AQI_POLLUTANT[pollutant_type],
+		pollutant_value,
+		algo=aqi.ALGO_EPA,
+	))
+
+
+def get_aqi_category(aqi_value):
+	aqi_value = cint(aqi_value)
+	if aqi_value <= 50:
+		return "Good"
+	elif aqi_value <= 100:
+		return "Moderate"
+	elif aqi_value <= 150:
+		return "Unhealthy for Sensitive Groups"
+	elif aqi_value <= 200:
+		return "Unhealthy"
+	elif aqi_value <= 300:
+		return "Very Unhealthy"
+	else:
+		return "Hazardous"
 
 
 @frappe.whitelist(allow_guest=True)
@@ -131,7 +182,7 @@ def get_monitor_readings(from_dt, to_dt):
 	return frappe.db.sql("""
 		select r.name, r.reading_dt,
 			r.air_monitor,
-			r.pm_2_5, r.aqi_us, r.outdoor_pm_2_5, r.outdoor_aqi_us,
+			r.pm_2_5, r.aqi_us,
 			r.temperature, r.relative_humidity, r.co2
 		from `tabMonitor Reading` r
 		inner join `tabAir Monitor` m on m.name = r.air_monitor
