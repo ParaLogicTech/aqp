@@ -5,6 +5,7 @@
 tags
 aqp/docs/current
 node_modules/
+node_modules
 __pycache__
 .idea/
 .vscode/
