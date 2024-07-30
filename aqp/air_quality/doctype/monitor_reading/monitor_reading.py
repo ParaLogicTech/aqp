@@ -2,10 +2,11 @@
 # For license information, please see license.txt
 
 import frappe
-from frappe import _, cint
-from frappe.utils import get_datetime, round_down
+from frappe import _
+from frappe.utils import get_datetime, round_down, getdate, combine_datetime, cint, flt, cstr
 from frappe.model.document import Document
 from datetime import timedelta
+import datetime
 import aqi
 
 
@@ -153,7 +154,7 @@ def get_latest_readings(for_datetime=None, window_minutes=60):
 	out.to_dt = for_datetime
 	out.from_dt = out.to_dt - timedelta(minutes=window_minutes)
 
-	readings = get_monitor_readings(out.from_dt, out.to_dt)
+	readings = get_monitor_readings(out.from_dt, out.to_dt, order_by="desc")
 	if readings:
 		out.latest_reading_dt = readings[0].reading_dt
 
@@ -168,27 +169,6 @@ def get_latest_readings(for_datetime=None, window_minutes=60):
 			monitors_map[monitor].has_reading = True
 
 	return out
-
-
-def get_monitor_readings(from_dt, to_dt):
-	if not from_dt or not to_dt:
-		frappe.throw(_("From Datetime and To Datetime is required"))
-
-	args = frappe._dict({
-		"from_dt": from_dt,
-		"to_dt": to_dt,
-	})
-
-	return frappe.db.sql("""
-		select r.name, r.reading_dt,
-			r.air_monitor,
-			r.pm_2_5, r.aqi_us,
-			r.temperature, r.relative_humidity, r.co2
-		from `tabMonitor Reading` r
-		inner join `tabAir Monitor` m on m.name = r.air_monitor
-		where reading_dt between %(from_dt)s and %(to_dt)s and m.disabled = 0
-		order by reading_dt desc
-	""", args, as_dict=1)
 
 
 @frappe.whitelist(allow_guest=True)
@@ -206,3 +186,83 @@ def _get_latest_reading_dt():
 	""")
 
 	return latest[0][0] if latest else None
+
+
+@frappe.whitelist(allow_guest=True)
+def get_daily_average_readings(from_date=None, to_date=None, air_monitor=None):
+	if not from_date:
+		from_date = getdate()
+	if not to_date:
+		to_date = getdate()
+
+	from_dt = combine_datetime(from_date, datetime.time.min)
+	to_dt = combine_datetime(to_date, datetime.time.max)
+
+	all_readings = get_monitor_readings(from_dt, to_dt, air_monitor=air_monitor, order_by="asc")
+	daily_averages = calculate_daily_average_readings(all_readings)
+
+	return daily_averages
+
+
+def calculate_daily_average_readings(readings):
+	date_dict_zero = frappe._dict({
+		"pm_2_5_sum": 0,
+		"pm_2_5_count": 0,
+		"pm_2_5_max": 0,
+		"pm_2_5_min": 0,
+		"pm_2_5_mean": 0,
+	})
+
+	daily_averages = {}
+	for r in readings:
+		if not r.pm_2_5:
+			continue
+
+		reading_date_obj = getdate(r.reading_dt)
+		reading_date = cstr(reading_date_obj)
+		if reading_date not in daily_averages:
+			daily_averages[reading_date] = date_dict_zero.copy()
+
+		date_dict = daily_averages[reading_date]
+		date_dict.pm_2_5_sum += r.pm_2_5
+		date_dict.pm_2_5_count += 1
+		date_dict.pm_2_5_max = max(r.pm_2_5, date_dict.pm_2_5_max)
+		date_dict.pm_2_5_min = min(r.pm_2_5, date_dict.pm_2_5_min or 999999999)
+
+	for date_dict in daily_averages.values():
+		date_dict.pm_2_5_mean = flt(date_dict.pm_2_5_sum / date_dict.pm_2_5_count, 9) if date_dict.pm_2_5_count else 0
+		date_dict.aqi_us = calculate_aqi("PM2.5", date_dict.pm_2_5_mean)
+		date_dict.aqi_category = get_aqi_category(date_dict.aqi_us)
+
+	return daily_averages
+
+
+def get_monitor_readings(from_dt, to_dt, air_monitor=None, order_by="asc"):
+	if not from_dt or not to_dt:
+		frappe.throw(_("From Datetime and To Datetime is required"))
+
+	order_by = cstr(order_by).lower() or "asc"
+	if order_by not in ("asc", "desc"):
+		frappe.throw(_("Invalid Order By {0}").format(order_by))
+
+	args = frappe._dict({
+		"from_dt": from_dt,
+		"to_dt": to_dt,
+		"air_monitor": air_monitor,
+	})
+
+	monitor_condition = ""
+	if air_monitor:
+		monitor_condition = " and r.air_monitor = %(air_monitor)s"
+
+	return frappe.db.sql(f"""
+		select r.name, r.reading_dt,
+			r.air_monitor,
+			r.pm_2_5, r.aqi_us,
+			r.temperature, r.relative_humidity, r.co2
+		from `tabMonitor Reading` r
+		inner join `tabAir Monitor` m on m.name = r.air_monitor
+		where r.reading_dt between %(from_dt)s and %(to_dt)s and m.disabled = 0
+			{monitor_condition}
+		order by r.reading_dt {order_by}
+	""", args, as_dict=1)
