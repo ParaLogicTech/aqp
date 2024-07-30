@@ -4,4 +4,4 @@ Air Quality Platform
 
 #### License
 
-MIT
+GNU General Public License (v3)

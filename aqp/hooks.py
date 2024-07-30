@@ -5,7 +5,7 @@ app_title = "Air Quality"
 app_publisher = "ParaLogic"
 app_description = "Air Quality Platform"
 app_email = "info@paralogic.io"
-app_license = "MIT"
+app_license = "GNU General Public License (v3)"
 
 
 override_whitelisted_methods = {
