@@ -234,7 +234,7 @@ class AirQualityAnalytics(object):
 
 		while True:
 			if self.filters.range == "Daily":
-				period_end_date = add_days(from_date, 1)
+				period_end_date = from_date
 			elif self.filters.range == "Weekly":
 				period_end_date = add_days(from_date, 6)
 			else:
