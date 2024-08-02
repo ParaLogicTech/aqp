@@ -29,13 +29,6 @@
    "unique": 1
   },
   {
-   "fieldname": "parent_monitor_region",
-   "fieldtype": "Link",
-   "label": "Parent Region",
-   "options": "Monitor Region",
-   "reqd": 1
-  },
-  {
    "fieldname": "lft",
    "fieldtype": "Int",
    "hidden": 1,
@@ -99,7 +92,7 @@
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2024-08-01 14:10:48.750972",
+ "modified": "2024-08-02 16:51:45.661474",
  "modified_by": "Administrator",
  "module": "Air Quality",
  "name": "Monitor Region",
