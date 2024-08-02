@@ -1,24 +1,25 @@
 {
  "actions": [],
- "allow_import": 1,
  "autoname": "autoincrement",
- "creation": "2023-10-08 03:45:56.240303",
+ "creation": "2024-08-01 02:57:56.715496",
  "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "air_monitor",
+  "monitor_region",
   "column_break_bspja",
+  "timespan",
+  "column_break_lwx1o",
   "reading_dt",
   "reading_section",
   "pm_2_5",
   "column_break_l8rud",
-  "temperature",
+  "pm_2_5_sum",
+  "pm_2_5_count",
   "column_break_mhwxu",
-  "relative_humidity",
-  "column_break_b1ugw",
-  "co2",
+  "pm_2_5_max",
+  "pm_2_5_min",
   "air_quality_section",
   "aqi_us",
   "column_break_u9iwp",
@@ -26,12 +27,21 @@
  ],
  "fields": [
   {
-   "fieldname": "air_monitor",
+   "fieldname": "monitor_region",
    "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Air Monitor",
-   "options": "Air Monitor",
+   "label": "Region",
+   "options": "Monitor Region",
+   "reqd": 1
+  },
+  {
+   "fieldname": "timespan",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Timespan",
+   "options": "Hourly\nDaily",
    "reqd": 1
   },
   {
@@ -39,13 +49,8 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "reading_dt",
-   "fieldtype": "Datetime",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Reading Time",
-   "reqd": 1,
-   "search_index": 1
+   "fieldname": "column_break_lwx1o",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "reading_section",
@@ -56,36 +61,32 @@
    "fieldname": "pm_2_5",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "PM2.5 (\u03bcg/m3)",
+   "label": "Average PM2.5 (\u03bcg/m3)",
    "non_negative": 1,
-   "precision": "2"
+   "precision": "2",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_l8rud",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "temperature",
+   "fieldname": "pm_2_5_sum",
    "fieldtype": "Float",
-   "label": "Temperature (\u00b0C)",
-   "precision": "1"
+   "label": "PM2.5 Sum",
+   "non_negative": 1,
+   "read_only": 1
   },
   {
-   "fieldname": "relative_humidity",
-   "fieldtype": "Float",
-   "label": "Relative Humidity (%)",
-   "precision": "1"
-  },
-  {
-   "fieldname": "column_break_b1ugw",
+   "fieldname": "column_break_mhwxu",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "co2",
-   "fieldtype": "Float",
-   "label": "CO2 (ppm)",
+   "fieldname": "pm_2_5_count",
+   "fieldtype": "Int",
+   "label": "PM2.5 Count",
    "non_negative": 1,
-   "precision": "1"
+   "read_only": 1
   },
   {
    "fieldname": "air_quality_section",
@@ -115,16 +116,34 @@
    "read_only": 1
   },
   {
-   "fieldname": "column_break_mhwxu",
-   "fieldtype": "Column Break"
+   "fieldname": "reading_dt",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Reading Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "pm_2_5_max",
+   "fieldtype": "Float",
+   "label": "PM2.5 Max",
+   "non_negative": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "pm_2_5_min",
+   "fieldtype": "Float",
+   "label": "PM2.5 Min",
+   "non_negative": 1,
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-08-01 23:19:56.028328",
+ "modified": "2024-08-01 23:27:18.023338",
  "modified_by": "Administrator",
  "module": "Air Quality",
- "name": "Monitor Reading",
+ "name": "Reading Aggregate",
  "naming_rule": "Autoincrement",
  "owner": "Administrator",
  "permissions": [
@@ -141,17 +160,13 @@
    "write": 1
   },
   {
-   "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
-   "import": 1,
    "print": 1,
    "read": 1,
    "report": 1,
    "role": "Air Quality Manager",
-   "share": 1,
-   "write": 1
+   "share": 1
   },
   {
    "email": 1,
@@ -163,10 +178,10 @@
    "share": 1
   }
  ],
- "search_fields": "air_monitor",
+ "search_fields": "monitor_region",
  "sort_field": "reading_dt",
  "sort_order": "DESC",
  "states": [],
- "title_field": "air_monitor",
+ "title_field": "monitor_region",
  "track_seen": 1
 }

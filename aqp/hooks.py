@@ -7,9 +7,11 @@ app_description = "Air Quality Platform"
 app_email = "info@paralogic.io"
 app_license = "GNU General Public License (v3)"
 
+after_install = "aqp.install.after_install"
 
 override_whitelisted_methods = {
 	"monitors.get_monitors": "aqp.air_quality.doctype.air_monitor.air_monitor.get_monitors",
+	"regions.get_regions": "aqp.air_quality.doctype.monitor_region.monitor_region.get_regions",
 	"readings.get_latest_readings": "aqp.air_quality.doctype.monitor_reading.monitor_reading.get_latest_readings",
 }
 

@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"_NkGI1U1Pk\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Air Quality</span>\",\"col\":12}},{\"id\":\"g0WhEang3Y\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Air Monitor\",\"col\":3}},{\"id\":\"UVEQZFMilO\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Monitor Reading\",\"col\":3}},{\"id\":\"EDqnWC2xeC\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Air Quality Analytics\",\"col\":3}},{\"id\":\"rgpN0JZx3n\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"FRnGguJXbO\",\"type\":\"card\",\"data\":{\"card_name\":\"Documents\",\"col\":4}},{\"id\":\"99aNmZTmxI\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
+ "content": "[{\"id\":\"_NkGI1U1Pk\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Air Quality</span>\",\"col\":12}},{\"id\":\"g0WhEang3Y\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Air Monitor\",\"col\":3}},{\"id\":\"UVEQZFMilO\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Monitor Reading\",\"col\":3}},{\"id\":\"DAxthJg-Ue\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Reading Aggregate\",\"col\":3}},{\"id\":\"EDqnWC2xeC\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Air Quality Analytics\",\"col\":3}},{\"id\":\"OxINTRaYbb\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Monitor Region\",\"col\":3}},{\"id\":\"rgpN0JZx3n\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"Z81ZVzJAk8\",\"type\":\"card\",\"data\":{\"card_name\":\"Masters\",\"col\":4}},{\"id\":\"FRnGguJXbO\",\"type\":\"card\",\"data\":{\"card_name\":\"Readings\",\"col\":4}},{\"id\":\"99aNmZTmxI\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
  "creation": "2023-10-08 04:46:44.284117",
  "custom_blocks": [],
  "docstatus": 0,
@@ -12,34 +12,6 @@
  "is_hidden": 0,
  "label": "Air Quality",
  "links": [
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Documents",
-   "link_count": 2,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Air Monitor",
-   "link_count": 0,
-   "link_to": "Air Monitor",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Monitor Reading",
-   "link_count": 0,
-   "link_to": "Monitor Reading",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
   {
    "hidden": 0,
    "is_query_report": 0,
@@ -57,9 +29,65 @@
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Masters",
+   "link_count": 2,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Air Monitor",
+   "link_count": 0,
+   "link_to": "Air Monitor",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Monitor Region",
+   "link_count": 0,
+   "link_to": "Monitor Region",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Readings",
+   "link_count": 2,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Monitor Reading",
+   "link_count": 0,
+   "link_to": "Monitor Reading",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reading Aggregate",
+   "link_count": 0,
+   "link_to": "Reading Aggregate",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2024-07-31 02:17:09.639000",
+ "modified": "2024-08-02 14:56:10.716578",
  "modified_by": "Administrator",
  "module": "Air Quality",
  "name": "Air Quality",
@@ -78,6 +106,15 @@
   {
    "color": "Blue",
    "doc_view": "List",
+   "format": "{} Regions",
+   "label": "Monitor Region",
+   "link_to": "Monitor Region",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
    "format": "{} Enabled",
    "label": "Air Monitor",
    "link_to": "Air Monitor",
@@ -91,6 +128,14 @@
    "link_to": "Air Quality Analytics",
    "stats_filter": "",
    "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "Report Builder",
+   "label": "Reading Aggregate",
+   "link_to": "Reading Aggregate",
+   "stats_filter": "",
+   "type": "DocType"
   },
   {
    "color": "Grey",

@@ -63,7 +63,7 @@ def get_monitors(filters=None, limit_start=0, limit_page_length=20, sort_by="cre
 	})
 
 
-def _get_monitors(filters=None, limit_start=None, limit_page_length=None, sort_by=None, sort_order=None):
+def _get_monitors(filters=None, limit_start=None, limit_page_length=None, sort_by=None, sort_order=None, pluck=None):
 	fields = [
 		"name", "monitor_name", "inactive",
 		"country", "city", "latitude", "longitude",
@@ -85,7 +85,8 @@ def _get_monitors(filters=None, limit_start=None, limit_page_length=None, sort_b
 		filters=filters,
 		limit_start=limit_start,
 		limit_page_length=limit_page_length,
-		order_by=get_order_by("Air Monitor", sort_by, sort_order, fields)
+		order_by=get_order_by("Air Monitor", sort_by, sort_order, fields),
+		pluck=pluck,
 	)
 
 

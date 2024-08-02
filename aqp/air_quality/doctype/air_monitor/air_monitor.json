@@ -12,6 +12,8 @@
   "monitor_name",
   "column_break_bwq3w",
   "location_section",
+  "monitor_region",
+  "column_break_pucxt",
   "country",
   "city",
   "column_break_scuej",
@@ -53,6 +55,7 @@
   {
    "fieldname": "country",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
    "label": "Country",
@@ -117,7 +120,6 @@
   {
    "fieldname": "first_reading_dt",
    "fieldtype": "Datetime",
-   "in_list_view": 1,
    "in_preview": 1,
    "label": "First Reading Time",
    "no_copy": 1,
@@ -134,12 +136,25 @@
    "default": "0",
    "fieldname": "inactive",
    "fieldtype": "Check",
+   "in_standard_filter": 1,
    "label": "Inactive"
+  },
+  {
+   "fieldname": "monitor_region",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Region",
+   "options": "Monitor Region"
+  },
+  {
+   "fieldname": "column_break_pucxt",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-08 15:12:11.076153",
+ "modified": "2024-08-01 13:17:29.745865",
  "modified_by": "Administrator",
  "module": "Air Quality",
  "name": "Air Monitor",

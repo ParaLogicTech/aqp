@@ -1,0 +1,137 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:monitor_region_name",
+ "creation": "2024-07-31 17:50:34.883585",
+ "default_view": "Tree",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "monitor_region_name",
+  "type",
+  "timezone",
+  "column_break_ocuqe",
+  "parent_monitor_region",
+  "is_group",
+  "disabled",
+  "lft",
+  "rgt",
+  "old_parent"
+ ],
+ "fields": [
+  {
+   "fieldname": "monitor_region_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Region Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "parent_monitor_region",
+   "fieldtype": "Link",
+   "label": "Parent Region",
+   "options": "Monitor Region",
+   "reqd": 1
+  },
+  {
+   "fieldname": "lft",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Left",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "rgt",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Right",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_group",
+   "fieldtype": "Check",
+   "label": "Is Group"
+  },
+  {
+   "fieldname": "old_parent",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Old Parent",
+   "options": "Monitor Region",
+   "read_only": 1
+  },
+  {
+   "fieldname": "parent_monitor_region",
+   "fieldtype": "Link",
+   "label": "Parent Region",
+   "options": "Monitor Region",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_ocuqe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "\nContinent\nCountry\nProvince/State\nCity\nDistrict",
+   "reqd": 1
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "timezone",
+   "fieldtype": "Select",
+   "label": "Timezone"
+  },
+  {
+   "default": "0",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "label": "Disabled"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_tree": 1,
+ "links": [],
+ "modified": "2024-08-01 14:10:48.750972",
+ "modified_by": "Administrator",
+ "module": "Air Quality",
+ "name": "Monitor Region",
+ "naming_rule": "By fieldname",
+ "nsm_parent_field": "parent_monitor_region",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Air Quality User",
+   "share": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Air Quality Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "parent_monitor_region",
+ "sort_field": "idx",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -4,7 +4,7 @@
 import frappe
 from frappe import _, scrub
 from frappe.utils import getdate, flt, cint, add_to_date, add_days
-from aqp.air_quality.doctype.monitor_reading.monitor_reading import calculate_aqi
+from aqp.air_quality.aqi import calculate_aqi, round_pollutant
 
 
 def execute(filters=None):
@@ -146,7 +146,7 @@ class AirQualityAnalytics(object):
 				amount = flt(period_data.get(period, {}).get("sum"))
 				count = cint(period_data.get(period, {}).get("count"))
 
-				row[scrub(period)] = amount / count if count else 0
+				row[scrub(period)] = round_pollutant("PM2.5", amount / count) if count else 0
 				if self.filters.value_field == "AQI (US)":
 					row[scrub(period)] = calculate_aqi("PM2.5", row[scrub(period)])
 
@@ -166,14 +166,15 @@ class AirQualityAnalytics(object):
 				total_row["count"] += count
 
 			# Entity average
-			row["average"] = row.sum / row.count if row.count else 0
+			row["average"] = round_pollutant("PM2.5", row.sum / row.count) if row.count else 0
 			if self.filters.value_field == "AQI (US)":
 				row["average"] = calculate_aqi("PM2.5", row["average"])
 
 			self.data.append(row)
 
 		# Total row averages
-		total_row["average"] = total_row["sum"] / total_row["count"] if total_row["count"] else 0
+		total_row["average"] = round_pollutant("PM2.5", total_row["sum"] / total_row["count"]) \
+			if total_row["count"] else 0
 		if self.filters.value_field == "AQI (US)":
 			total_row["average"] = calculate_aqi("PM2.5", total_row["average"])
 
@@ -183,7 +184,7 @@ class AirQualityAnalytics(object):
 			amount = flt(total_row.get(scrub(period) + "_sum"))
 			count = cint(total_row.get(scrub(period) + "_count"))
 
-			total_row[scrub(period)] = amount / count if count else 0
+			total_row[scrub(period)] = round_pollutant("PM2.5", amount / count) if count else 0
 			if self.filters.value_field == "AQI (US)":
 				total_row[scrub(period)] = calculate_aqi("PM2.5", total_row[scrub(period)])
 
