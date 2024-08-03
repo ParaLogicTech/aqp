@@ -99,6 +99,7 @@ frappe.query_reports["Air Quality Analytics"] = {
 	},
 
 	onload: function() {
+		if (!frappe.query_report.get_filter_value("from_date") && !frappe.query_report.get_filter_value("to_date"))
 		return frappe.call({
 			method: "aqp.air_quality.doctype.monitor_reading.monitor_reading.get_latest_reading_dt",
 			callback: (r) => {
@@ -106,8 +107,8 @@ frappe.query_reports["Air Quality Analytics"] = {
 				let to_date = date_obj.format(frappe.defaultDateFormat);
 				let from_date = frappe.datetime.add_months(to_date, -12);
 
-				frappe.query_report.set_filter_value("to_date", to_date);
 				frappe.query_report.set_filter_value("from_date", from_date);
+				frappe.query_report.set_filter_value("to_date", to_date);
 			}
 		});
 	}

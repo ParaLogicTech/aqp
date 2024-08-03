@@ -3,8 +3,9 @@
 
 import frappe
 from frappe import _, scrub
-from frappe.utils import getdate, flt, cint, add_to_date, add_days
+from frappe.utils import getdate, flt, cint, add_to_date, add_days, combine_datetime
 from aqp.air_quality.aqi import calculate_aqi, round_pollutant
+import datetime
 
 
 def execute(filters=None):
@@ -82,25 +83,24 @@ class AirQualityAnalytics(object):
 		if self.filters.doctype == "Monitor Reading" and self.filters.monitor_region:
 			air_monitor_join = "left join `tabAir Monitor` m on m.name = r.air_monitor"
 
-		sum_field = "pm_2_5"
-		count_field = "1"
+		sum_field = "pm_2_5_sum" if self.filters.doctype == "Reading Aggregate" else "pm_2_5"
+		count_field = "pm_2_5_count" if self.filters.doctype == "Reading Aggregate" else "1"
 
 		self.entries = frappe.db.sql("""
 			select
 				{entity_field} as entity,
 				{entity_name_field}
+				DATE(r.reading_dt) as date,
 				{sum_field} as sum,
-				{count_field} as count,
-				{date_field} as date
+				{count_field} as count
 			from `tab{doctype}` r
 			{air_monitor_join}
-			where {date_field} between %(from_date)s and %(to_date)s
+			where r.reading_dt between %(from_dt)s and %(to_dt)s
 				{filter_conditions}
 		""".format(
 			doctype=self.filters.doctype,
 			entity_field=entity_field,
 			entity_name_field=entity_name_field,
-			date_field=self.date_field,
 			filter_conditions=filter_conditions,
 			air_monitor_join=air_monitor_join,
 			sum_field=sum_field,
@@ -121,7 +121,8 @@ class AirQualityAnalytics(object):
 	def get_conditions(self):
 		conditions = []
 
-		self.date_field = "r.reading_dt"
+		self.filters.from_dt = combine_datetime(self.filters.from_date, datetime.time.min)
+		self.filters.to_dt = combine_datetime(self.filters.to_dt, datetime.time.max)
 
 		self.filters.doctype = "Monitor Reading" if self.filters.tree_type == "Air Monitor" else "Reading Aggregate"
 		if self.filters.doctype == "Reading Aggregate":
@@ -263,9 +264,9 @@ class AirQualityAnalytics(object):
 				"sum": 0, "count": 0,
 			}))
 
-			self.entity_periodic_data[d.entity][period]["sum"] += flt(d.sum)
-			if flt(d.sum):
-				self.entity_periodic_data[d.entity][period]["count"] += cint(d.count)
+			if d.sum:
+				self.entity_periodic_data[d.entity][period]["sum"] += d.sum
+				self.entity_periodic_data[d.entity][period]["count"] += d.count
 
 	def get_period(self, posting_date):
 		if self.filters.range == 'Daily':
