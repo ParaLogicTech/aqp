@@ -20,6 +20,7 @@ class ReadingUpdateTool(Document):
 		aggregate_for_regions_timerange.enqueue(
 			from_dt=self.from_dt,
 			to_dt=self.to_dt,
+			update_hourly=not self.daily_only,
 			queue="long",
 		)
 
@@ -27,12 +28,13 @@ class ReadingUpdateTool(Document):
 
 
 @frappe.task(timeout=60 * 60 * 6)
-def aggregate_for_regions_timerange(from_dt, to_dt):
+def aggregate_for_regions_timerange(from_dt, to_dt, update_hourly=True):
 	from aqp.air_quality.doctype.reading_aggregate.reading_aggregate import aggregate_for_regions_timerange
 
-	aggregate_for_regions_timerange(
-		from_dt, to_dt, "Hourly", update_existing=True, autocommit=True, publish_realtime=True
-	)
+	if update_hourly:
+		aggregate_for_regions_timerange(
+			from_dt, to_dt, "Hourly", update_existing=True, autocommit=True, publish_realtime=True
+		)
 
 	aggregate_for_regions_timerange(
 		from_dt, to_dt, "Daily", update_existing=True, autocommit=True, publish_realtime=True
