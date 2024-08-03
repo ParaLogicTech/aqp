@@ -9,5 +9,9 @@ def get_data():
 				'label': _('Monitors'),
 				'items': ['Air Monitor']
 			},
+			{
+				'label': _('Readings'),
+				'items': ['Reading Aggregate']
+			},
 		]
 	}
