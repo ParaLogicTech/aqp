@@ -8,16 +8,8 @@ frappe.query_reports["Air Quality Analytics"] = {
 			fieldname: "tree_type",
 			label: __("Tree Type"),
 			fieldtype: "Select",
-			options: ["Air Monitor"],
-			default: "Air Monitor",
-			reqd: 1
-		},
-		{
-			fieldname: "doctype",
-			label: __("Based On"),
-			fieldtype: "Select",
-			options: ["Monitor Reading"],
-			default: "Monitor Reading",
+			options: ["Monitor Region", "Air Monitor"],
+			default: "Monitor Region",
 			reqd: 1
 		},
 		{
@@ -55,10 +47,10 @@ frappe.query_reports["Air Quality Analytics"] = {
 			reqd: 1
 		},
 		{
-			fieldname: "air_monitor",
-			label: __("Air Monitor"),
+			fieldname: "monitor_region",
+			label: __("Monitor Region"),
 			fieldtype: "Link",
-			options: "Air Monitor",
+			options: "Monitor Region",
 		},
 	],
 

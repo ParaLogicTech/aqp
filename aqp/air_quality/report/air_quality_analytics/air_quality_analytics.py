@@ -17,7 +17,6 @@ class AirQualityAnalytics(object):
 		self.months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 		self.get_period_date_ranges()
 		self.entity_names = {}
-		self.filters.tree_doctype = self.get_tree_doctype()
 
 	def run(self):
 		self.get_columns()
@@ -28,7 +27,7 @@ class AirQualityAnalytics(object):
 	def get_columns(self):
 		self.columns = [{
 			"label": _(self.filters.tree_type),
-			"options": self.filters.tree_doctype,
+			"options": self.filters.tree_type,
 			"fieldname": "entity",
 			"fieldtype": "Link",
 			"width": 200
@@ -67,42 +66,50 @@ class AirQualityAnalytics(object):
 
 	def get_data(self):
 		if self.filters.tree_type == 'Air Monitor':
-			self.get_entries("m.air_monitor")
-			self.get_rows()
+			self.get_entries("r.air_monitor")
+			self.get_rows_by_monitors()
+		elif self.filters.tree_type == 'Monitor Region':
+			self.get_entries("r.monitor_region")
+			self.get_regions()
+			self.get_rows_by_region()
 
 	def get_entries(self, entity_field, entity_name_field=None):
 		filter_conditions = self.get_conditions()
 
-		value_field = self.get_value_fieldname()
 		entity_name_field = "{0} as entity_name, ".format(entity_name_field) if entity_name_field else ""
+
+		air_monitor_join = ""
+		if self.filters.doctype == "Monitor Reading" and self.filters.monitor_region:
+			air_monitor_join = "left join `tabAir Monitor` m on m.name = r.air_monitor"
+
+		sum_field = "pm_2_5"
+		count_field = "1"
 
 		self.entries = frappe.db.sql("""
 			select
 				{entity_field} as entity,
 				{entity_name_field}
-				{value_field} as value_field,
+				{sum_field} as sum,
+				{count_field} as count,
 				{date_field} as date
-			from `tabMonitor Reading` m
+			from `tab{doctype}` r
+			{air_monitor_join}
 			where {date_field} between %(from_date)s and %(to_date)s
 				{filter_conditions}
 		""".format(
+			doctype=self.filters.doctype,
 			entity_field=entity_field,
 			entity_name_field=entity_name_field,
-			value_field=value_field,
 			date_field=self.date_field,
-			filter_conditions=filter_conditions
+			filter_conditions=filter_conditions,
+			air_monitor_join=air_monitor_join,
+			sum_field=sum_field,
+			count_field=count_field,
 		), self.filters, as_dict=1)
 
 		if entity_name_field:
 			for d in self.entries:
 				self.entity_names.setdefault(d.entity, d.entity_name)
-
-	def get_value_fieldname(self):
-		filter_to_field = {
-			"PM2.5": "pm_2_5",
-			"AQI (US)": "pm_2_5",
-		}
-		return filter_to_field.get(self.filters.value_field, "1")
 
 	def get_value_fieldtype(self):
 		filter_to_field = {
@@ -111,20 +118,30 @@ class AirQualityAnalytics(object):
 		}
 		return filter_to_field.get(self.filters.value_field, "Float")
 
-	def get_tree_doctype(self):
-		return self.filters.tree_type
-
 	def get_conditions(self):
 		conditions = []
 
-		self.date_field = "m.reading_dt"
+		self.date_field = "r.reading_dt"
 
-		if self.filters.air_monitor:
-			conditions.append("m.air_monitor = %(air_monitor)s")
+		self.filters.doctype = "Monitor Reading" if self.filters.tree_type == "Air Monitor" else "Reading Aggregate"
+		if self.filters.doctype == "Reading Aggregate":
+			conditions.append("r.timespan = 'Daily'")
+
+		if self.filters.monitor_region:
+			self.filters.monitor_regions = frappe.get_all("Monitor Region", filters={
+				"name": ["subtree of", self.filters.monitor_region]
+			}, pluck="name")
+			if not self.filters.monitor_regions:
+				self.filters.monitor_regions = [self.filters.monitor_region]
+
+			if self.filters.tree_type == "Air Monitor":
+				conditions.append("m.monitor_region in %(monitor_regions)s")
+			else:
+				conditions.append("r.monitor_region in %(monitor_regions)s")
 
 		return "and {}".format(" and ".join(conditions)) if conditions else ""
 
-	def get_rows(self):
+	def get_rows_by_monitors(self):
 		self.data = []
 		self.get_periodic_data()
 
@@ -188,6 +205,55 @@ class AirQualityAnalytics(object):
 			if self.filters.value_field == "AQI (US)":
 				total_row[scrub(period)] = calculate_aqi("PM2.5", total_row[scrub(period)])
 
+	def get_regions(self):
+		self.depth_map = frappe._dict()
+
+		filters = {}
+		if self.filters.get("monitor_regions"):
+			filters["name"] = ["in", self.filters.get("monitor_regions")]
+
+		self.group_entries = frappe.get_all("Monitor Region", fields=[
+			"name", "lft", "rgt", "parent_monitor_region as parent",
+		], filters=filters, order_by="lft asc")
+
+		for d in self.group_entries:
+			self.depth_map.setdefault(d.name, self.depth_map.get(d.parent, -1) + 1)
+
+	def get_rows_by_region(self):
+		self.get_periodic_data()
+		out = []
+
+		for d in reversed(self.group_entries):
+			row = frappe._dict({
+				"entity": d.name,
+				"indent": self.depth_map.get(d.name),
+				"sum": 0,
+				"count": 0,
+			})
+
+			for end_date in self.periodic_daterange:
+				period = self.get_period(end_date)
+
+				amount = flt(self.entity_periodic_data.get(d.name, {}).get(period, frappe._dict()).get("sum"))
+				count = cint(self.entity_periodic_data.get(d.name, {}).get(period, frappe._dict()).get("count"))
+
+				row[scrub(period)] = round_pollutant("PM2.5", amount / count) if count else 0
+				if self.filters.value_field == "AQI (US)":
+					row[scrub(period)] = calculate_aqi("PM2.5", row[scrub(period)])
+
+				# Accumulate for entity row
+				row.sum += amount
+				row.count += count
+
+			# Entity average
+			row["average"] = round_pollutant("PM2.5", row.sum / row.count) if row.count else 0
+			if self.filters.value_field == "AQI (US)":
+				row["average"] = calculate_aqi("PM2.5", row["average"])
+
+			out = [row] + out
+
+		self.data = out
+
 	def get_periodic_data(self):
 		self.entity_periodic_data = frappe._dict()
 
@@ -197,9 +263,9 @@ class AirQualityAnalytics(object):
 				"sum": 0, "count": 0,
 			}))
 
-			self.entity_periodic_data[d.entity][period]["sum"] += flt(d.value_field)
-			if flt(d.value_field):
-				self.entity_periodic_data[d.entity][period]["count"] += 1
+			self.entity_periodic_data[d.entity][period]["sum"] += flt(d.sum)
+			if flt(d.sum):
+				self.entity_periodic_data[d.entity][period]["count"] += cint(d.count)
 
 	def get_period(self, posting_date):
 		if self.filters.range == 'Daily':
