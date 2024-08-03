@@ -48,17 +48,8 @@ class ReadingAggregate(Document):
 		self.set_aqi(update=update, update_modified=update_modified)
 
 	def validate_duplicate(self):
-		filters = {
-			"monitor_region": self.monitor_region,
-			"reading_dt": self.reading_dt,
-			"timespan": self.timespan,
-		}
-
-		if not self.is_new():
-			filters["name"] = ["!=", self.name]
-
-		existing = frappe.db.get_value("Reading Aggregate", filters)
-
+		existing = get_existing_aggregate(self.reading_dt, self.timespan, self.monitor_region,
+			exclude=self.name if not self.is_new() else None)
 		if existing:
 			frappe.throw(_("Reading Aggregate at {0} already exists ({1})").format(
 				frappe.bold(self.get_formatted("reading_dt")),
@@ -99,7 +90,7 @@ def get_hourly_aggregate_data(reading_dt, monitor_region):
 
 	air_monitors = region_doc.get_direct_air_monitors()
 	monitor_readings = get_monitor_readings(from_dt, to_dt, air_monitor=air_monitors)
-	agg = aggregate_readings(monitor_readings)
+	agg = aggregate_readings(monitor_readings, use_accumulated_values=False)
 
 	child_regions = region_doc.get_child_regions()
 	child_aggregates = get_reading_aggregates(from_dt, to_dt, "Hourly", monitor_region=child_regions)
@@ -115,7 +106,7 @@ def get_daily_aggregate_data(reading_dt, monitor_region):
 	from_dt, to_dt = get_reading_timerange(reading_dt, "Daily")
 
 	hourly_aggregates = get_reading_aggregates(from_dt, to_dt, "Hourly", monitor_region=monitor_region)
-	agg = aggregate_readings(hourly_aggregates, use_accumulated_values=False)
+	agg = aggregate_readings(hourly_aggregates, use_accumulated_values=True)
 
 	return agg
 
@@ -169,11 +160,11 @@ def aggregate_for_regions(reading_dt, timespan, update_existing=True):
 
 	regions = get_regions_bottom_up()
 	for monitor_region in regions:
-		try:
+		existing = get_existing_aggregate(reading_dt, timespan, monitor_region)
+		if not existing:
 			create_reading_aggregate(reading_dt, timespan, monitor_region)
-		except frappe.DuplicateEntryError:
-			if update_existing:
-				update_reading_aggregate(reading_dt, timespan, monitor_region)
+		elif update_existing:
+			_update_reading_aggregate(existing)
 
 
 def create_reading_aggregate(reading_dt, timespan, monitor_region):
@@ -195,13 +186,10 @@ def create_reading_aggregate(reading_dt, timespan, monitor_region):
 
 def update_reading_aggregate(reading_dt, timespan, monitor_region):
 	reading_dt = truncate_reading_dt(reading_dt, timespan)
-	from_dt, to_dt = get_reading_timerange(reading_dt, timespan)
 
-	reading_aggregates = get_reading_aggregates(from_dt, to_dt, timespan, monitor_region)
-	name = reading_aggregates[0].name if reading_aggregates else None
-
-	if name:
-		_update_reading_aggregate(name)
+	existing = get_existing_aggregate(reading_dt, timespan, monitor_region)
+	if existing:
+		_update_reading_aggregate(existing)
 
 
 def _update_reading_aggregate(name):
@@ -299,6 +287,21 @@ def get_reading_datetimes_for_timerange(from_dt, to_dt, timespan):
 			current_dt = current_dt + datetime.timedelta(days=1)
 
 	return reading_datetimes
+
+
+def get_existing_aggregate(reading_dt, timespan, monitor_region, exclude=None):
+	reading_dt = truncate_reading_dt(reading_dt, timespan)
+
+	filters = {
+		"reading_dt": reading_dt,
+		"timespan": timespan,
+		"monitor_region": monitor_region,
+	}
+
+	if exclude:
+		filters["name"] = ["!=", exclude]
+
+	return frappe.db.get_value("Reading Aggregate", filters)
 
 
 def truncate_reading_dt(reading_dt, timespan):
