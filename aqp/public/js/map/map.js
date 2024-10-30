@@ -1,4 +1,4 @@
-import Vue from "vue/dist/vue.js";
+import { Vue } from 'vue'
 import { LMap, LTileLayer, LMarker } from "vue2-leaflet";
 import MapView from "./MapView.vue"
 
